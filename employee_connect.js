@@ -136,8 +136,10 @@ function viewEmployeesDepartment() {
         message: "Search By Department",
         name: "department"
     }).then(function(answer) {
-        connection.query("SELECT * FROM employee_log", { department: answer.department }, function (err, res) {
+        connection.query("SELECT * FROM department_log", function (err, res) {
             if (err) throw err;
+            console.log("\n");
+            
             console.table(res);
         });
         runStart();
@@ -152,8 +154,9 @@ function viewEmployeesManager() {
         message: "Search By Manager",
         name: "manager"
     }).then(function(answer) {
-        connection.query("SELECT * FROM employee_log", { manager: answer.manager }, function (err, res) {
+        connection.query("SELECT * FROM role_log", function (err, res) {
             if (err) throw err;
+            console.log("\n");
             console.table(res.answer);
         });
         runStart();
@@ -161,42 +164,36 @@ function viewEmployeesManager() {
 }
 
 //4----------------------------------------------------
-
 function addEmployee() {
 
     runStart();
 }
 
 //5----------------------------------------------------
-
 function removeEmployee() {
 
     runStart();
 }
 
 //6----------------------------------------------------
-
 function updateEmployeeRole() {
 
     runStart();
 }
 
 //7----------------------------------------------------
-
 function updateEmployeeManager() {
 
     runStart();
 }
 
 //8----------------------------------------------------
-
 function addDepartment() {
 
     runStart();
 }
 
 //9----------------------------------------------------
-
 function viewAllRoles() {
     inquirer.prompt ({
         type: "input",
@@ -213,21 +210,18 @@ function viewAllRoles() {
 }
 
 //10----------------------------------------------------
-
 function addRole() {
 
     runStart();
 }
 
 //11----------------------------------------------------
-
 function removeRole() {
 
     runStart();
 }
 
 //12----------------------------------------------------
-
 function updateRole() {
 
     runStart();
