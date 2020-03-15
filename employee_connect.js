@@ -1,230 +1,483 @@
 const mysql = require("mysql");
 const inquirer = require("inquirer");
 
-const connection = mysql.createConnection({
+var connection = mysql.createConnection({
     host: "localhost",
-
-    // Your port; if not 3306
     port: 3306,
-
-    // Your username
     user: "root",
-
-    // Your password
     password: "mysql4masoN",
-    database: "employee_tracker_DB"
+    database: "employee_trackerDB"
 });
+
+console.log(`
+
+         ███████╗███╗   ███╗██████╗ ██╗      ██████╗ ██╗   ██╗███████╗███████╗    
+         ██╔════╝████╗ ████║██╔══██╗██║     ██╔═══██╗╚██╗ ██╔╝██╔════╝██╔════╝    
+         █████╗  ██╔████╔██║██████╔╝██║     ██║   ██║ ╚████╔╝ █████╗  █████╗      
+         ██╔══╝  ██║╚██╔╝██║██╔═══╝ ██║     ██║   ██║  ╚██╔╝  ██╔══╝  ██╔══╝      
+         ███████╗██║ ╚═╝ ██║██║     ███████╗╚██████╔╝   ██║   ███████╗███████╗    
+         ╚══════╝╚═╝     ╚═╝╚═╝     ╚══════╝ ╚═════╝    ╚═╝   ╚══════╝╚══════╝ 
+
+            ███╗   ███╗ █████╗ ███╗   ██╗ █████╗  ██████╗ ███████╗██████╗            
+            ████╗ ████║██╔══██╗████╗  ██║██╔══██╗██╔════╝ ██╔════╝██╔══██╗           
+            ██╔████╔██║███████║██╔██╗ ██║███████║██║  ███╗█████╗  ██████╔╝           
+            ██║╚██╔╝██║██╔══██║██║╚██╗██║██╔══██║██║   ██║██╔══╝  ██╔══██╗           
+            ██║ ╚═╝ ██║██║  ██║██║ ╚████║██║  ██║╚██████╔╝███████╗██║  ██║           
+            ╚═╝     ╚═╝╚═╝  ╚═╝╚═╝  ╚═══╝╚═╝  ╚═╝ ╚═════╝ ╚══════╝╚═╝  ╚═╝           
+
+         `);
 
 connection.connect(function (err) {
     if (err) throw err;
-    //call first function, this function will call function start
-    runStart();
+    start();
 });
 
-//0:
-//function start: askes the first questions, and then calls other..
-//functons bassed off of what the user picks.. uses inquirer.
-function runStart() {
-    console.log(`
-        ███████╗███╗   ███╗██████╗ ██╗      ██████╗ ██╗   ██╗███████╗███████╗    
-        ██╔════╝████╗ ████║██╔══██╗██║     ██╔═══██╗╚██╗ ██╔╝██╔════╝██╔════╝    
-        █████╗  ██╔████╔██║██████╔╝██║     ██║   ██║ ╚████╔╝ █████╗  █████╗      
-        ██╔══╝  ██║╚██╔╝██║██╔═══╝ ██║     ██║   ██║  ╚██╔╝  ██╔══╝  ██╔══╝      
-        ███████╗██║ ╚═╝ ██║██║     ███████╗╚██████╔╝   ██║   ███████╗███████╗    
-        ╚══════╝╚═╝     ╚═╝╚═╝     ╚══════╝ ╚═════╝    ╚═╝   ╚══════╝╚══════╝ 
 
-        ███╗   ███╗ █████╗ ███╗   ██╗ █████╗  ██████╗ ███████╗██████╗            
-        ████╗ ████║██╔══██╗████╗  ██║██╔══██╗██╔════╝ ██╔════╝██╔══██╗           
-        ██╔████╔██║███████║██╔██╗ ██║███████║██║  ███╗█████╗  ██████╔╝           
-        ██║╚██╔╝██║██╔══██║██║╚██╗██║██╔══██║██║   ██║██╔══╝  ██╔══██╗           
-        ██║ ╚═╝ ██║██║  ██║██║ ╚████║██║  ██║╚██████╔╝███████╗██║  ██║           
-        ╚═╝     ╚═╝╚═╝  ╚═╝╚═╝  ╚═══╝╚═╝  ╚═╝ ╚═════╝ ╚══════╝╚═╝  ╚═╝           
-                                       
-        `);
-    inquirer.prompt({
-        name: "action",
-        message: "What would you like to do?",
-        type: "list",
-        choices: [
-            "View All Employees",
-            "View All Employees By Department",
-            "View All Employees By Manager",
-            "Add Employee",
-            "Remove Employee",
-            "Update Employee Role",
-            "Update Employee Manager",
-            "Add A New Department",
-            "View All Roles",
-            "Add Role",
-            "Remove Role",
-            "Update Role",
-            "EXIT"
-        ]
-    })
-  .then(function (answer) {
-        switch (answer.action) {
-            case "View All Employees":
-                viewEmployees();
-                break;
+function start() {
+    inquirer.prompt(
+        {
+            type: "list",
+            name: "list",
+            message: "What would you like to do?",
+            choices: [
+                "View All Employees",
+                "View Departments",
+                "View Roles",
+                "Add Employee",
+                "Add Department",
+                "Add Role",
+                "Update Employee Roles",
+                "Remove Employee",
+                "Remove Department",
+                "Remove Role",
+                "Exit"
+            ]
+        }).then(data => {
+            switch (data.list) {
 
-            case "View All Employees By Department":
-                viewEmployeesDepartment();
-                break;
+                case "View Departments":
+                    viewDepartments();
+                    break;
 
-            case "View All Employees By Manager":
-                viewEmployeesManager();
-                break;
+                case "View Roles":
+                    viewRoles();
+                    break;
 
-            case "Add Employee":
-                addEmployee();
-                break;
+                case "View All Employees":
+                    viewAllEmployees();
+                    break;
 
-            case "Remove Employee":
-                removeEmployee();
-                break;
+                case "Update Employee Roles":
+                    updateEmployeeRoles();
+                    break;
 
-            case "Update Employee Role":
-                updateEmployeeRole();
-                break;
+                case "Add Department":
+                    addDepartment();
+                    break;
 
-            case "Update Employee Manager":
-                updateEmployeeManager();
-                break;
+                case "Add Role":
+                    addRole();
+                    break;
 
-            case "Add A New Department":
-                addDepartment();
-                break;
+                case "Add Employee":
+                    addEmployee();
+                    break;
 
-            case "View All Roles":
-                viewAllRoles();
-                break;
+                case "Remove Employee":
+                    deleteEmployee();
+                    break;
 
-            case "Add Role":
-                addRole();
-                break;
+                case "Remove Role":
+                    deleteRole();
+                    break;
 
-            case "Remove Role":
-                removeRole();
-                break;
+                case "Remove Department":
+                    deleteDepartment();
+                    break;
 
-            case "Update Role":
-                updateRole();
-                break;
+                case "Exit":
+                    connection.end();
+                    break;
 
-            case "EXIT":
-                connection.end();
-                break;
-        }
-    });
-}
-//1:
-//function will console log all employee info in a table.
-function viewEmployees() {
-    connection.query("SELECT * FROM employee_log", function (err, res) {
+            }
+        });
+};
+
+function viewDepartments() {
+    connection.query("SELECT * FROM department", (err, res) => {
         if (err) throw err;
-        console.log("\n");
         console.table(res);
-    });
-    runStart();
+        start();
+    })
+
+};
+
+function viewRoles() {
+    connection.query("SELECT title, salary, name FROM role LEFT JOIN department ON role.department_id = department.id", (err, res) => {
+        if (err) throw err;
+        console.table(res);
+        start();
+    })
+
+};
+
+function viewAllEmployees() {
+    connection.query("SELECT employee.id, employee.first_name, employee.last_name, role.title, department.name AS department, role.salary, CONCAT(manager.first_name, ' ', manager.last_name) AS manager FROM employee LEFT JOIN role on employee.role_id = role.id LEFT JOIN department on role.department_id = department.id LEFT JOIN employee manager on manager.id = employee.manager_id;", (err, res) => {
+        if (err) throw err;
+        console.table(res);
+        start();
+    })
+};
+
+function updateEmployeeRoles() {
+    connection.query("SELECT * FROM employee", (err, res2) => {
+        if (err) throw err;
+        const employeeChoices = res2.map((res2) => {
+            return res2.first_name + " " + res2.last_name
+        })
+
+        employeeChoices.push("Exit");
+        inquirer.prompt(
+            {
+                type: "list",
+                name: "employeeNames",
+                message: "Please Update An Employee.",
+                choices: employeeChoices
+            }).then(data2 => {
+                if (data2.employeeNames === "Exit") {
+                    return start();
+                }
+
+                connection.query("SELECT * FROM role", (err, res) => {
+                    if (err) throw err;
+                    const roleIdChoices = res.map((res) => {
+                        return res.title;
+                    })
+
+                    roleIdChoices.push("None");
+                    inquirer.prompt(
+                        {
+                            type: "list",
+                            name: "roleId",
+                            message: "Please enter employee's new role.",
+                            choices: roleIdChoices
+                        }).then(data => {
+                            var chosenItem;
+                            for (var i = 0; i < res.length; i++) {
+                                if (res[i].title === data.roleId) {
+                                    chosenItem = res[i];
+                                }
+                            }
+
+                            var chosenItem2;
+                            for (var i = 0; i < res2.length; i++) {
+                                if (res2[i].first_name + " " + res2[i].last_name === data2.employeeNames) {
+                                    chosenItem2 = res2[i];
+                                }
+                            }
+
+                            connection.query("UPDATE employee SET ? WHERE ?", [
+                                {
+                                    role_id: chosenItem.id
+                                },
+                                {
+                                    id: chosenItem2.id
+                                }], err => {
+                                    if (err) throw err;
+                                    console.log("Employee Updated");
+                                    start();
+                                })
+                        });
+                })
+            });
+    })
 }
 
-//2----------------------------------------------------
-
-function viewEmployeesDepartment() {
-    inquirer.prompt ({
-        type: "input",
-        message: "Search By Department",
-        name: "department"
-    }).then(function(answer) {
-        connection.query("SELECT * FROM department_log", function (err, res) {
+function addDepartment() {
+    inquirer.prompt(
+        {
+            type: "input",
+            name: "name",
+            message: "Name"
+        }
+    ).then(data => {
+        connection.query("INSERT INTO department SET ?", data, (err) => {
             if (err) throw err;
-            console.log("\n");
-            
-            console.table(res);
-        });
-        runStart();
-    });
-}
+            console.log("Department Updated to DateBase")
+            start();
+        })
+    })
+};
 
-//3----------------------------------------------------
+function addRole() {
+    connection.query("SELECT * FROM department", (err, res) => {
+        if (err) throw err;
+        const departmentReturn = res.map((res) => {
+            return res.name;
+        })
 
-function viewEmployeesManager() {
-    inquirer.prompt ({
-        type: "input",
-        message: "Search By Manager",
-        name: "manager"
-    }).then(function(answer) {
-        connection.query("SELECT * FROM role_log", function (err, res) {
-            if (err) throw err;
-            console.log("\n");
-            console.table(res.answer);
-        });
-        runStart();
-    });
-}
+        departmentReturn.push("None");
+        inquirer.prompt([
+            {
+                type: "input",
+                name: "title",
+                message: "Please Enter the Role Title."
+            },
+            {
+                type: "number",
+                name: "salary",
+                message: "Please Enter the Salary For This Position."
+            },
+            {
+                type: "list",
+                name: "roles",
+                message: "What Department Is This Role Active Under.",
+                choices: departmentReturn
+            }]).then(data => {
+                var chosenItem;
+                for (var i = 0; i < res.length; i++) {
+                    if (res[i].name === data.department_id) {
+                        chosenItem = res[i];
+                    }
+                }
 
-//4----------------------------------------------------
+                connection.query("INSERT INTO role SET ?", {
+                    title: data.title,
+                    salary: data.salary,
+                    department_id: chosenItem
+                }, (err) => {
+                    if (err) throw err;
+                    console.log("Role Updated To DataBase")
+                    start();
+                })
+            })
+
+    })
+
+};
+
 function addEmployee() {
 
-    runStart();
-}
+    connection.query("SELECT * FROM role", (err, res) => {
+        if (err) throw err;
 
-//5----------------------------------------------------
-function removeEmployee() {
+        const roleIdChoices = res.map((res) => {
+            return res.title;
+        })
 
-    runStart();
-}
+        roleIdChoices.push("N/A");
 
-//6----------------------------------------------------
-function updateEmployeeRole() {
+        inquirer.prompt([
+            {
+                type: "input",
+                name: "firstName",
+                message: "Please Enter The Employee's First Name."
+            },
+            {
+                type: "input",
+                name: "lastName",
+                message: "Please Enter The Employee's Last Name."
+            },
+            {
+                type: "list",
+                name: "roleId",
+                message: "Please Enter The Employee's Role.",
+                choices: roleIdChoices
+            }
+        ]).then(data => {
 
-    runStart();
-}
+            var chosenItem = [];
+            if (data.roleId === "None") {
+                chosenItem.id = null;
+            } else {
+                for (var i = 0; i < res.length; i++) {
+                    if (res[i].title === data.roleId) {
+                        chosenItem = res[i];
+                    }
+                }
+            }
 
-//7----------------------------------------------------
-function updateEmployeeManager() {
+            connection.query("SELECT * FROM employee", (err, res2) => {
+                if (err) throw err;
+                const employeeChoices = res2.map((res2) => {
+                    return res2.first_name + " " + res2.last_name
+                })
+                employeeChoices.push("None");
 
-    runStart();
-}
+                inquirer.prompt(
+                    {
+                        type: "list",
+                        name: "mangerId",
+                        message: "Please Enter The Emplyee's Manager.",
+                        choices: employeeChoices
+                    }
+                ).then(data2 => {
 
-//8----------------------------------------------------
-function addDepartment() {
+                    if (data2.mangerId === "None") {
+                        connection.query("INSERT INTO employee SET ?", {
+                            first_name: data.firstName,
+                            last_name: data.lastName,
+                            role_id: chosenItem.id,
+                            manager_id: null
+                        }, err => {
+                            if (err) throw err;
+                            console.log("Employee Updated to DataBase");
+                            return start();
+                        })
+                    }
+                    var chosenItem2;
+                    for (var i = 0; i < res2.length; i++) {
+                        if (res2[i].first_name + " " + res2[i].last_name === data2.mangerId) {
+                            chosenItem2 = res2[i];
+                        }
+                    }
 
-    runStart();
-}
+                    connection.query("INSERT INTO employee SET ?", {
+                        first_name: data.firstName,
+                        last_name: data.lastName,
+                        role_id: chosenItem.id,
+                        manager_id: chosenItem2.id
+                    }, err => {
+                        if (err) throw err;
+                        console.log("Employee Updated to DataBase");
+                        start();
+                    })
 
-//9----------------------------------------------------
-function viewAllRoles() {
-    inquirer.prompt ({
-        type: "input",
-        message: "Search By Manager",
-        name: "title"
-    }).then(function(answer) {
-        connection.query("SELECT * FROM employee_log", { title: answer.title }, function (err, res) {
-            if (err) throw err;
-            console.table(res.answer);
-        });
-        runStart();
-    });
-    runStart();
-}
 
-//10----------------------------------------------------
-function addRole() {
+                })
 
-    runStart();
-}
+            });
 
-//11----------------------------------------------------
-function removeRole() {
+        })
 
-    runStart();
-}
+    })
 
-//12----------------------------------------------------
-function updateRole() {
+};
 
-    runStart();
-}
+function deleteEmployee() {
 
-//end----------------------------------------------------
+    connection.query("SELECT * FROM employee", (err, res) => {
+        if (err) throw err;
+
+        const employeeChoices = res.map((res) => {
+            return res.first_name + " " + res.last_name
+        })
+        employeeChoices.push("Exit");
+
+        inquirer.prompt({
+            type: "list",
+            name: "delete",
+            message: "Please Select An Employee To Delete",
+            choices: employeeChoices
+        }).then(data => {
+
+            if (data.delete === "Exit") {
+                return start();
+            }
+
+            var chosenItem;
+            for (var i = 0; i < res.length; i++) {
+                if (res[i].first_name + " " + res[i].last_name === data.delete) {
+                    chosenItem = res[i];
+                }
+            }
+
+            connection.query("DELETE FROM employee WHERE ?", {
+                id: chosenItem.id
+            }, (err) => {
+                if (err) throw err;
+                console.log("Employee Deleted From DataBase")
+                start();
+            })
+
+        })
+
+    })
+
+};
+
+function deleteRole() {
+
+    connection.query("SELECT * FROM role", (err, res) => {
+        if (err) throw err;
+
+        const employeeChoices = res.map((res) => {
+            return res.title;
+        })
+        employeeChoices.push("Exit");
+
+
+        inquirer.prompt({
+            type: "list",
+            name: "delete",
+            message: "Please Select A Role To Delete",
+            choices: employeeChoices
+        }).then(data => {
+
+            if (data.delete === "Exit") {
+                return start();
+            }
+
+            var chosenItem;
+            for (var i = 0; i < res.length; i++) {
+                if (res[i].title === data.delete) {
+                    chosenItem = res[i];
+                }
+            }
+
+            connection.query("DELETE FROM role WHERE ?", {
+                id: chosenItem.id
+            }, (err) => {
+                if (err) throw err;
+                console.log("Role Deleted From DataBase")
+                start();
+            })
+
+        })
+
+    })
+
+};
+
+function deleteDepartment() {
+
+    connection.query("SELECT * FROM department", (err, res) => {
+        if (err) throw err;
+
+        const employeeChoices = res.map((res) => {
+            return res.name;
+        })
+        employeeChoices.push("Exit");
+
+
+        inquirer.prompt({
+            type: "list",
+            name: "delete",
+            message: "Please Select A Department To Delete",
+            choices: employeeChoices
+        }).then(data => {
+
+            if (data.delete === "Exit") {
+                return start();
+            }
+
+            var chosenItem;
+            for (var i = 0; i < res.length; i++) {
+                if (res[i].name === data.delete) {
+                    chosenItem = res[i];
+                }
+            }
+
+            connection.query("DELETE FROM department WHERE ?", {
+                id: chosenItem.id
+            }, (err) => {
+                if (err) throw err;
+                console.log("Department Deleted From DataBase")
+                start();
+            })
+
+        })
+
+    })
+
+};

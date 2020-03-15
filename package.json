@@ -18,8 +18,10 @@
   },
   "homepage": "https://github.com/masonstafford/Employee-Tracker#readme",
   "dependencies": {
-    "console-table-printer": "^1.1.64",
-    "inquirer": "^7.0.6",
+    "inquirer": "^7.1.0",
     "mysql": "^2.18.1"
+  },
+  "devDependencies": {
+    "nodemon": "^2.0.2"
   }
 }
